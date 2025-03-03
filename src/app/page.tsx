@@ -101,6 +101,8 @@ export default function NotesApp() {
   const addOrUpdateNote = async (data: any) => {
     if (!user) return;
 
+    if (!data.title || !data.text) return;
+
     if (editingId) {
       notes.map(async (note) => {
         if (note.id === editingId) {
@@ -248,8 +250,8 @@ export default function NotesApp() {
               <CardHeader className="px-6 pt-6 pb-2">
                 <CardTitle className="text-2xl font-semibold text-slate-300">{note.title}</CardTitle>
               </CardHeader>
-              <CardContent>
-                <p className="truncate text-slate-400 ">{note.text}</p>
+              <CardContent className="flex flex-col justify-end ">
+                <p className="truncate text-slate-400">{note.text}</p>
                 <div className="flex gap-4 mt-5 items-end">
                   <Button className="bg-gray-800 hover:bg-gray-700 rounded-3xl text-slate-400 hover:text-slate-200" onClick={() => editNote(note.id)}>Edit</Button>
                   <Dialog open={openModal} onOpenChange={setOpenModal}>

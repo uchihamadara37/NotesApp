@@ -12,9 +12,30 @@ type Note = {
     updatedAt: Date;
 };
 
+// Cek apakah admin sudah diinisialisasi
+// if (!admin.apps.length) {
+//     console.log("Menginisialisasi Firebase Admin...");
+//     admin.initializeApp({
+//         credential: admin.credential.cert({
+//             projectId: process.env.ADMIN_PROJECT_ID,
+//             clientEmail: process.env.ADMIN_CLIENT_EMAIL,
+//             privateKey: process.env.ADMIN_PRIVATE_KEY?.replace(/\\n/g, "\n"),
+//         }),
+//     });
+// } else {
+//     console.log("Firebase Admin sudah diinisialisasi.");
+// }
+
+// console.log("🛠️ ADMIN_PROJECT_ID:", process.env.ADMIN_PROJECT_ID);
+// console.log("🛠️ ADMIN_CLIENT_EMAIL:", process.env.ADMIN_CLIENT_EMAIL);
+// console.log("🛠️ ADMIN_PRIVATE_KEY (5 chars pertama):", process.env.ADMIN_PRIVATE_KEY?.slice(0, 5));
+// console.log("🛠️ ADMIN_PRIVATE_KEY (akhir 5 chars):", process.env.ADMIN_PRIVATE_KEY?.slice(-5));
+
+
 // GET: Ambil catatan user
 export async function GET(req: Request) {
     const token = req.headers.get("Authorization")?.split("Bearer ")[1];
+    console.log("mulai GET");
 
     if (!token) {
         return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
