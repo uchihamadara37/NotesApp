@@ -52,6 +52,7 @@ export default function LoginPage() {
 
       console.log("Login berhasil:", userCredential.user);
       router.push("/"); // Redirect ke dashboard setelah login
+      console.log("apakah jalan lagi?")
     } catch (error) {
       console.error("Login gagal:", error);
       alert("Email atau password salah!");
