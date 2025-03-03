@@ -27,7 +27,8 @@ export async function PUT(
 ) {
     try {
         const uid = await verifyUser(req); // Verifikasi pengguna
-        const noteId = req.nextUrl.searchParams.get("id")
+        const pathParts = req.nextUrl.pathname.split("/"); // Ambil path sebagai array
+        const noteId = pathParts[pathParts.length - 1];
         const { title, text } = await req.json();
 
         if (!title || !text || !noteId) {
@@ -61,10 +62,11 @@ export async function DELETE(
 ) {
     try {
         const uid = await verifyUser(req); // Verifikasi pengguna
-        const noteId = req.nextUrl.searchParams.get("id")
+        const pathParts = req.nextUrl.pathname.split("/"); // Ambil path sebagai array
+        const noteId = pathParts[pathParts.length - 1];
 
         if (!noteId) {
-            return NextResponse.json({ error: "note id not found" }, { status: 404 });
+            return NextResponse.json({ error: "note id not found", message: noteId }, { status: 404 });
         }
 
         const noteRef = db.collection("users").doc(uid).collection("notes").doc(noteId);
