@@ -1,101 +1,303 @@
-import Image from "next/image";
+"use client"
 
-export default function Home() {
+import { useCallback, useEffect, useState } from "react";
+import { v4 as uuidv4 } from "uuid";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Dialog, DialogTrigger, DialogContent, DialogHeader, DialogFooter, DialogTitle, DialogDescription } from "@/components/ui/dialog";
+import { Button } from "@/components/ui/button";
+import { Textarea } from "@/components/ui/textarea";
+import { Input } from "@/components/ui/input";
+import { useForm } from "react-hook-form";
+
+import { onAuthStateChanged, User } from "firebase/auth";
+
+import Cookies from "js-cookie";
+import { useAuth } from "./context/authContext";
+import { useRouter } from "next/navigation";
+
+
+
+
+
+
+const updateNote = async (note: Note) => {
+  const response = await fetch(`/api/note/${note.id}`, {
+    method: "PUT",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify(note),
+  });
+
+  const result = await response.json();
+  console.log(result);
+}
+
+
+const formatter = new Intl.DateTimeFormat("id-ID", {
+  day: "2-digit",
+  month: "long",
+  year: "numeric",
+  hour: "2-digit",
+  minute: "2-digit",
+  hour12: false, // Gunakan format 24 jam
+});
+type Note = {
+  id: string;
+  title: string;
+  text: string;
+  createdAt: Date;
+  updatedAt: Date;
+};
+
+export default function NotesApp() {
+
+  const router = useRouter();
+
+  const [notes, setNotes] = useState<Note[]>([]);
+  const [selectedNote, setSelectedNote] = useState<Note | null>(null);
+
+  const [editingId, setEditingId] = useState<string | null>(null);
+
+  const { user, logout } = useAuth();
+
+  const [openModal, setOpenModal] = useState(false);
+
+  const {
+    register,
+    handleSubmit,
+    reset,
+    setValue,
+    getValues,
+  } = useForm();
+
+  useEffect(() => {
+    fetchNotes();
+  }, [user]);
+
+  const fetchNotes = async () => {
+    console.log('Fetching notes dijalankan');
+    if (!user) return; // Jika tidak ada user, keluar dari fungsi
+    console.log('Fetching notes dijalankan 2');
+
+    try {
+      const token = await user.getIdToken();
+      const response = await fetch("/api/note", {
+        method: "GET",
+        headers: { Authorization: `Bearer ${token}` },
+      });
+
+      if (!response.ok) throw new Error("Failed to fetch notes");
+
+      const data = await response.json();
+      console.log("ini dia notesnya ", data);
+      setNotes(data);
+
+
+    } catch (error) {
+      console.error("Error fetching notes:", error);
+    }
+
+  };
+
+  const addOrUpdateNote = async (data: any) => {
+    if (!user) return;
+
+    if (editingId) {
+      notes.map(async (note) => {
+        if (note.id === editingId) {
+
+          // Update notes di Firestore
+          try {
+            const token = await user.getIdToken();
+            const response = await fetch(`/api/note/${editingId}`, {
+              method: "PUT",
+              headers: {
+                "Content-Type": "application/json",
+                authorization: `Bearer ${token}`,
+              },
+              body: JSON.stringify({ title: data.title, text: data.text }),
+            });
+
+            const result = await response.json();
+            console.log("Update response PUT:", result);
+            fetchNotes();
+          } catch (error) {
+            console.error("Error updating note:", error);
+          }
+
+
+        }
+      })
+
+      setEditingId(null);
+
+    } else {
+      // untuk penambahan notes
+      // const updatedNotes = [...notes, {
+      //   id: uuidv4(),
+      //   title: data.title,
+      //   text: data.text,
+      //   createdAt: new Date(),
+      //   updatedAt: new Date()
+      // }];
+
+      // console.log("Note yang akan dikirim:", updatedNotes);
+
+      try {
+        const token = await user.getIdToken();
+        const response = await fetch("/api/note", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            authorization: `Bearer ${token}`,
+          },
+          body: JSON.stringify({ title: data.title, text: data.text }),
+        });
+
+        const result = await response.json();
+        console.log("Response dari server:", result);
+        fetchNotes();
+
+      } catch (error) {
+        console.error("Error mengirim data:", error);
+      }
+    }
+    
+    reset(); // reset form
+  };
+
+  const editNote = (id: string) => {
+    const note = notes.find((n) => n.id === id);
+    setValue('title', note!.title || '');
+    setValue('text', note!.text || '');    //
+    setEditingId(id);
+  };
+
+
+  const confirmDelete = async () => {
+    if (!user) return;
+    if (!selectedNote) {
+      return; // Jika note yang dipilih belum ada, keluar dari fungsi
+    }
+    try {
+      const token = await user.getIdToken();
+      const response = await fetch(`/api/note/${selectedNote.id}`, {
+        method: "DELETE",
+        headers: {
+          authorization: `Bearer ${token}`,
+        },
+      });
+
+      const result = await response.json();
+      console.log("Delete response:", result);
+      fetchNotes();
+    } catch (error) {
+      console.error("Error deleting note:", error);
+    }
+    setSelectedNote(null); // Tutup modal setelah delete
+  };
+
+
+  const handleLogout = () => {
+    logout();
+    Cookies.remove("firebase-auth-token");
+    Cookies.remove("user-name");
+    router.push("/sign-in"); // Redirect ke halaman login setelah logout
+  };
+
   return (
-    <div className="grid grid-rows-[20px_1fr_20px] items-center justify-items-center min-h-screen p-8 pb-20 gap-16 sm:p-20 font-[family-name:var(--font-geist-sans)]">
-      <main className="flex flex-col gap-8 row-start-2 items-center sm:items-start">
-        <Image
-          className="dark:invert"
-          src="/next.svg"
-          alt="Next.js logo"
-          width={180}
-          height={38}
-          priority
-        />
-        <ol className="list-inside list-decimal text-sm text-center sm:text-left font-[family-name:var(--font-geist-mono)]">
-          <li className="mb-2">
-            Get started by editing{" "}
-            <code className="bg-black/[.05] dark:bg-white/[.06] px-1 py-0.5 rounded font-semibold">
-              src/app/page.tsx
-            </code>
-            .
-          </li>
-          <li>Save and see your changes instantly.</li>
-        </ol>
+    <div className="min-h-screen bg-gray-900 text-slate-300 p-6">
+      <nav className="bg-gray-900 text-white p-4 flex justify-between items-center px-[10%]">
+        <span className="text-lg font-semibold">Welcome, {user?.displayName || user?.email + " Guest"}</span>
+        <button
+          onClick={handleLogout}
+          className="bg-red-500 hover:bg-red-600 text-white px-4 py-2 rounded-md"
+        >
+          Logout
+        </button>
+      </nav>
+      <div className="max-w-xl mx-auto space-y-4">
+        <h1 className="my-6 text-2xl font-bold text-center">Notes App</h1>
 
-        <div className="flex gap-4 items-center flex-col sm:flex-row">
-          <a
-            className="rounded-full border border-solid border-transparent transition-colors flex items-center justify-center bg-foreground text-background gap-2 hover:bg-[#383838] dark:hover:bg-[#ccc] text-sm sm:text-base h-10 sm:h-12 px-4 sm:px-5"
-            href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            <Image
-              className="dark:invert"
-              src="/vercel.svg"
-              alt="Vercel logomark"
-              width={20}
-              height={20}
-            />
-            Deploy now
-          </a>
-          <a
-            className="rounded-full border border-solid border-black/[.08] dark:border-white/[.145] transition-colors flex items-center justify-center hover:bg-[#f2f2f2] dark:hover:bg-[#1a1a1a] hover:border-transparent text-sm sm:text-base h-10 sm:h-12 px-4 sm:px-5 sm:min-w-44"
-            href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Read our docs
-          </a>
+        <form onSubmit={handleSubmit(addOrUpdateNote)} className="flex flex-col bg-gray-800 text-slate-400 px-5 pt-7 pb-5 rounded-3xl items-end">
+          <Input
+            className="!text-3xl mb-3 w-full rounded-md border-0 focus:outline-none focus:border-0 focus:ring-0 focus:border-transparent"
+            placeholder="Title..."
+            {...register('title')}
+          />
+          <Textarea
+            className="!text-lg border-0 focus:outline-none focus:border-0 focus:ring-0 focus:border-transparent h-60 scrollbar-thin scrollbar-thumb-gray-500 scrollbar-track-transparent resize-none"
+            placeholder="Tulis catatan..."
+            {...register('text')}
+          />
+          <div className="w-36 mt-3">
+            <Button className="w-full bg-blue-600 hover:bg-blue-500 rounded-3xl" type="submit">
+              {editingId ? "Update Catatan" : "Tambah Catatan"}
+            </Button>
+
+          </div>
+        </form>
+
+
+
+      </div>
+
+      <div className="">
+        <div className="flex mx-5 mt-10 flex-wrap gap-5 justify-center">
+          {notes.map((note) => (
+            <Card key={note.id} className="bg-gray-600 p-0 rounded-2xl border-0 w-[30rem]">
+              <CardHeader className="px-6 pt-6 pb-2">
+                <CardTitle className="text-2xl font-semibold text-slate-300">{note.title}</CardTitle>
+              </CardHeader>
+              <CardContent>
+                <p className="truncate text-slate-400 ">{note.text}</p>
+                <div className="flex gap-4 mt-5 items-end">
+                  <Button className="bg-gray-800 hover:bg-gray-700 rounded-3xl text-slate-400 hover:text-slate-200" onClick={() => editNote(note.id)}>Edit</Button>
+                  <Dialog open={openModal} onOpenChange={setOpenModal}>
+                    <DialogTrigger asChild>
+                      <Button
+                        className="bg-slate-400 hover:bg-slate-200 text-slate-950 rounded-3xl"
+                        onClick={() => setSelectedNote(note)}
+                      >
+                        Hapus
+                      </Button>
+                    </DialogTrigger>
+
+                    <DialogContent>
+                      <DialogHeader>
+                        <DialogTitle>Konfirmasi Hapus</DialogTitle>
+                        <DialogDescription>
+                          Apakah Anda yakin ingin menghapus catatan ini? Tindakan ini tidak dapat dibatalkan.
+                        </DialogDescription>
+                      </DialogHeader>
+                      <DialogFooter>
+                        <Button onClick={() => {
+                          setOpenModal(false);
+                          setSelectedNote(null);
+                        }} variant="outline">
+                          Batal
+                        </Button>
+                        <Button onClick={() => {
+                          setOpenModal(false);
+                          confirmDelete();
+                        }} className="bg-red-600 hover:bg-red-500">
+                          Hapus
+                        </Button>
+                      </DialogFooter>
+                    </DialogContent>
+                  </Dialog>
+                  <span className="text-slate-400 ml-auto text-sm">Updated {new Intl.DateTimeFormat("id-ID", {
+                    day: "2-digit",
+                    month: "long",
+                    year: "numeric",
+                  }).format(new Date(note.updatedAt))}</span>
+                </div>
+              </CardContent>
+            </Card>
+          ))}
         </div>
-      </main>
-      <footer className="row-start-3 flex gap-6 flex-wrap items-center justify-center">
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="/file.svg"
-            alt="File icon"
-            width={16}
-            height={16}
-          />
-          Learn
-        </a>
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="/window.svg"
-            alt="Window icon"
-            width={16}
-            height={16}
-          />
-          Examples
-        </a>
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://nextjs.org?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="/globe.svg"
-            alt="Globe icon"
-            width={16}
-            height={16}
-          />
-          Go to nextjs.org →
-        </a>
-      </footer>
+
+      </div>
+
     </div>
   );
 }
