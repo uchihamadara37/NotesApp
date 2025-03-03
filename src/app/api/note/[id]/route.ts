@@ -21,13 +21,16 @@ async function verifyUser(req: NextRequest) {
 }
 
 // **UPDATE NOTE**
-export async function PUT(req: NextRequest, { params }: { params: { id: string } }) {
+export async function PUT(
+    req: NextRequest, 
+    // context: { params: { id: string } }
+) {
     try {
         const uid = await verifyUser(req); // Verifikasi pengguna
-        const { id: noteId } = await params;
+        const noteId = req.nextUrl.searchParams.get("id")
         const { title, text } = await req.json();
 
-        if (!title || !text) {
+        if (!title || !text || !noteId) {
             return NextResponse.json({ error: "Title and text are required" }, { status: 400 });
         }
 
@@ -52,10 +55,17 @@ export async function PUT(req: NextRequest, { params }: { params: { id: string }
 }
 
 // **DELETE NOTE**
-export async function DELETE(req: NextRequest, { params }: { params: { id: string } }) {
+export async function DELETE(
+    req: NextRequest, 
+    // { params }: { params: { id: string } }
+) {
     try {
         const uid = await verifyUser(req); // Verifikasi pengguna
-        const { id: noteId } = await params;
+        const noteId = req.nextUrl.searchParams.get("id")
+
+        if (!noteId) {
+            return NextResponse.json({ error: "note id not found" }, { status: 404 });
+        }
 
         const noteRef = db.collection("users").doc(uid).collection("notes").doc(noteId);
         const noteSnap = await noteRef.get();

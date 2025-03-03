@@ -1,6 +1,6 @@
 "use client"
 
-import { useEffect, useState } from "react";
+import { useEffect} from "react";
 import { useRouter } from "next/navigation";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -52,8 +52,8 @@ export default function LoginPage() {
 
       console.log("Login berhasil:", userCredential.user);
       router.push("/"); // Redirect ke dashboard setelah login
-    } catch (error: any) {
-      console.error("Login gagal:", error.message);
+    } catch (error) {
+      console.error("Login gagal:", error);
       alert("Email atau password salah!");
     }
 

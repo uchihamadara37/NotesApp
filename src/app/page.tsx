@@ -1,7 +1,7 @@
 "use client"
 
-import { useCallback, useEffect, useState } from "react";
-import { v4 as uuidv4 } from "uuid";
+import { useEffect, useState } from "react";
+// import { v4 as uuidv4 } from "uuid";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Dialog, DialogTrigger, DialogContent, DialogHeader, DialogFooter, DialogTitle, DialogDescription } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
@@ -9,7 +9,7 @@ import { Textarea } from "@/components/ui/textarea";
 import { Input } from "@/components/ui/input";
 import { useForm } from "react-hook-form";
 
-import { onAuthStateChanged, User } from "firebase/auth";
+// import { onAuthStateChanged, User } from "firebase/auth";
 
 import Cookies from "js-cookie";
 import { useAuth } from "./context/authContext";
@@ -20,26 +20,26 @@ import { useRouter } from "next/navigation";
 
 
 
-const updateNote = async (note: Note) => {
-  const response = await fetch(`/api/note/${note.id}`, {
-    method: "PUT",
-    headers: { "Content-Type": "application/json" },
-    body: JSON.stringify(note),
-  });
+// const updateNote = async (note: Note) => {
+//   const response = await fetch(`/api/note/${note.id}`, {
+//     method: "PUT",
+//     headers: { "Content-Type": "application/json" },
+//     body: JSON.stringify(note),
+//   });
 
-  const result = await response.json();
-  console.log(result);
-}
+//   const result = await response.json();
+//   console.log(result);
+// }
 
 
-const formatter = new Intl.DateTimeFormat("id-ID", {
-  day: "2-digit",
-  month: "long",
-  year: "numeric",
-  hour: "2-digit",
-  minute: "2-digit",
-  hour12: false, // Gunakan format 24 jam
-});
+// const formatter = new Intl.DateTimeFormat("id-ID", {
+//   day: "2-digit",
+//   month: "long",
+//   year: "numeric",
+//   hour: "2-digit",
+//   minute: "2-digit",
+//   hour12: false, // Gunakan format 24 jam
+// });
 type Note = {
   id: string;
   title: string;
@@ -66,12 +66,15 @@ export default function NotesApp() {
     handleSubmit,
     reset,
     setValue,
-    getValues,
-  } = useForm();
-
-  useEffect(() => {
-    fetchNotes();
-  }, [user]);
+    // getValues,
+  } = useForm<Note>({
+    defaultValues: {
+      title: "",
+      text: "",
+      createdAt: new Date(),
+      updatedAt: new Date(),
+    }
+  });
 
   const fetchNotes = async () => {
     console.log('Fetching notes dijalankan');
@@ -98,7 +101,36 @@ export default function NotesApp() {
 
   };
 
-  const addOrUpdateNote = async (data: any) => {
+  useEffect(() => {
+    const fetchNya = async () => {
+
+      console.log('Fetching notes dijalankan');
+      if (!user) return; // Jika tidak ada user, keluar dari fungsi
+      console.log('Fetching notes dijalankan 2');
+
+      try {
+        const token = await user.getIdToken();
+        const response = await fetch("/api/note", {
+          method: "GET",
+          headers: { Authorization: `Bearer ${token}` },
+        });
+
+        if (!response.ok) throw new Error("Failed to fetch notes");
+
+        const data = await response.json();
+        console.log("ini dia notesnya ", data);
+        setNotes(data);
+
+
+      } catch (error) {
+        console.error("Error fetching notes:", error);
+      }
+    }
+    fetchNya();
+  }, [user])
+
+
+  const addOrUpdateNote = async (data: Note) => {
     if (!user) return;
 
     if (!data.title || !data.text) return;
@@ -163,7 +195,7 @@ export default function NotesApp() {
         console.error("Error mengirim data:", error);
       }
     }
-    
+
     reset(); // reset form
   };
 

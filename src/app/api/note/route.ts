@@ -1,16 +1,15 @@
-import { NextApiRequest, NextApiResponse } from "next";
 import { db } from "@/lib/firebaseAdmin";
 import { NextResponse } from "next/server";
 // import { auth } from "@/app/firebase/config";
 import admin from "firebase-admin";
 
-type Note = {
-    id: string;
-    title: string;
-    text: string;
-    createdAt: Date;
-    updatedAt: Date;
-};
+// type Note = {
+//     id: string;
+//     title: string;
+//     text: string;
+//     createdAt: Date;
+//     updatedAt: Date;
+// };
 
 // Cek apakah admin sudah diinisialisasi
 // if (!admin.apps.length) {
@@ -90,57 +89,4 @@ export async function POST(req: Request) {
     }
 }
 
-// 🔹 POST: Simpan array catatan
-// export async function POST(req: Request) {
-//     try {
-//         // console.log("data yang dikirim", await req.json());
-//         const notes: Note[] = await req.json();
-
-//         if (!Array.isArray(notes)) {
-//             return NextResponse.json({ error: "Data harus berupa array catatan" }, { status: 400 });
-//         }
-//         console.log(notes);
-//         const batch = db.batch();
-
-//         notes.forEach((note) => {
-//             const noteRef = db.collection("notes").doc(note.id);
-//             batch.set(noteRef, {
-//                 title: note.title,
-//                 text: note.text,
-//                 createdAt: note.createdAt,
-//                 updatedAt: note.updatedAt ,
-//             });
-//         });
-
-//         try {
-//             await batch.commit();
-//             return NextResponse.json({ success: true, message: "Catatan berhasil disimpan" }, { status: 201 });
-//         } catch (error: any) {
-//             console.error("Error committing batch:", error);
-//             return NextResponse.json({ error: "Failed to save notes", details: error.message }, { status: 500 });
-//         }
-
-//     } catch (error) {
-//         console.error("Error saving notes:", error);
-//         return NextResponse.json({ error: "Internal Server Error" }, { status: 500 });
-//     }
-// }
-
-
-// export async function GET() {
-//     try {
-//         const snapshot = await db.collection("notes").orderBy("createdAt", "desc").get();
-//         const notes: Note[] = snapshot.docs.map((doc) => ({
-//             id: doc.id,
-//             ...(doc.data() as Omit<Note, "id">), // Cast data ke tipe Note
-//             createdAt: doc.data().createdAt, // Convert Firestore timestamp ke Date
-//             updatedAt: doc.data().updatedAt,
-//         }));
-
-//         return NextResponse.json(notes, { status: 200 });
-//     } catch (error) {
-//         console.error("Error fetching notes:", error);
-//         return NextResponse.json({ error: "Internal Server Error" }, { status: 500 });
-//     }
-// }
 

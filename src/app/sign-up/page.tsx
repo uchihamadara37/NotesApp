@@ -1,6 +1,6 @@
 "use client"
 
-import { useState } from "react";
+// import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -15,10 +15,7 @@ import { z } from "zod";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 
-import { getFunctions, httpsCallable } from "firebase/functions";
-
-const functions = getFunctions();
-const registerUser = httpsCallable(functions, "registerUser");
+// const registerUser = httpsCallable(functions, "registerUser");
 
 // Skema validasi password dengan aturan tertentu
 // const passwordSchema = z
@@ -58,13 +55,6 @@ export default function RegisterPage() {
 
   const router = useRouter();
 
-  const [createUserWithEmailAndPassword, user, loading, errorAuth] = useCreateUserWithEmailAndPassword(auth);
-
-  if (errorAuth) {
-    console.error("Error oi:", errorAuth.message);
-    return;
-  }
-
   const {
     register,
     handleSubmit,
@@ -72,6 +62,20 @@ export default function RegisterPage() {
   } = useForm({
     resolver: zodResolver(schema),
   });
+
+  const [
+    createUserWithEmailAndPassword, 
+    // user, 
+    // loading, 
+    errorAuth
+  ] = useCreateUserWithEmailAndPassword(auth);
+
+  if (errorAuth) {
+    console.error("Error oi:", errorAuth);
+    return;
+  }
+
+  
 
 
   const onSubmit = async (data : formValues) => {
