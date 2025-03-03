@@ -2,7 +2,9 @@ This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-
 
 ## Getting Started
 
-First, run the development server:
+First, don`f forget to make your own config Firebase for clientSide and FirebaseAdmin to server side within .env.local file
+
+Then if you have finished your modul install, run the development server:
 
 ```bash
 npm run dev
