@@ -1,6 +1,6 @@
 This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
 
-## Getting Started
+## NEXT-JS | SHadCn UI - Getting Started
 
 First, don`f forget to make your own config Firebase for clientSide and FirebaseAdmin to server side within .env.local file
 
