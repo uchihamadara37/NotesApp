@@ -1,6 +1,8 @@
 import { NextRequest, NextResponse } from 'next/server';
+console.log("jangkrik middleware2");
 
 export function middleware(req: NextRequest) {
+    console.log("jangkrik middleware2");
     console.log("Middleware executed:", req.nextUrl.pathname);
 
     const token = req.cookies.get('firebase-auth-token'); // Sesuaikan dengan cara menyimpan token

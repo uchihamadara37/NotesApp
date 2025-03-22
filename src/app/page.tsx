@@ -165,16 +165,6 @@ export default function NotesApp() {
       setEditingId(null);
 
     } else {
-      // untuk penambahan notes
-      // const updatedNotes = [...notes, {
-      //   id: uuidv4(),
-      //   title: data.title,
-      //   text: data.text,
-      //   createdAt: new Date(),
-      //   updatedAt: new Date()
-      // }];
-
-      // console.log("Note yang akan dikirim:", updatedNotes);
 
       try {
         const token = await user.getIdToken();
@@ -240,8 +230,8 @@ export default function NotesApp() {
 
   return (
     <div className="min-h-screen bg-gray-900 text-slate-300 p-6">
-      <nav className="bg-gray-900 text-white p-4 flex justify-between items-center px-[10%]">
-        <span className="text-lg font-semibold">Welcome, {user?.displayName || user?.email + " Guest"}</span>
+      <nav className="bg-gray-900 text-white p-4 flex justify-between items-center px-2 md:px-20">
+        <span className="text-sm md:text-2xl font-semibold">Welcome, {user?.displayName || user?.email}</span>
         <button
           onClick={handleLogout}
           className="bg-red-500 hover:bg-red-600 text-white px-4 py-2 rounded-md"
@@ -252,7 +242,7 @@ export default function NotesApp() {
       <div className="max-w-xl mx-auto space-y-4">
         <h1 className="my-6 text-2xl font-bold text-center">Notes App</h1>
 
-        <form onSubmit={handleSubmit(addOrUpdateNote)} className="flex flex-col bg-gray-800 text-slate-400 px-5 pt-7 pb-5 rounded-3xl items-end">
+        <form onSubmit={handleSubmit(addOrUpdateNote)} className="flex flex-col bg-gray-800 text-slate-400 px-1 md:px-5 pt-5 md:pt-7 pb-5 rounded-3xl items-end">
           <Input
             className="!text-3xl mb-3 w-full rounded-md border-0 focus:outline-none focus:border-0 focus:ring-0 focus:border-transparent"
             placeholder="Title..."
@@ -263,28 +253,25 @@ export default function NotesApp() {
             placeholder="Tulis catatan..."
             {...register('text')}
           />
-          <div className="w-36 mt-3">
+          <div className="w-36 mt-3 mr-4 md:mr-0">
             <Button className="w-full bg-blue-600 hover:bg-blue-500 rounded-3xl" type="submit">
               {editingId ? "Update Catatan" : "Tambah Catatan"}
             </Button>
 
           </div>
         </form>
-
-
-
       </div>
 
       <div className="">
-        <div className="flex mx-5 mt-10 flex-wrap gap-5 justify-center">
+        <div className="flex mx-1 mt-10 flex-wrap gap-5 justify-center">
           {notes.map((note) => (
-            <Card key={note.id} className="bg-gray-600 p-0 rounded-2xl border-0 w-[30rem]">
-              <CardHeader className="px-6 pt-6 pb-2">
-                <CardTitle className="text-2xl font-semibold text-slate-300">{note.title}</CardTitle>
+            <Card key={note.id} className="bg-gray-600 p-0 rounded-2xl md:rounded-3xl border-0 w-[100%] md:w-[30rem]">
+              <CardHeader className="px-4 md:px-6 pt-3 md:pt-6 pb-2">
+                <CardTitle className="text-xl md:text-2xl font-semibold text-slate-300">{note.title}</CardTitle>
               </CardHeader>
-              <CardContent className="flex flex-col justify-end ">
+              <CardContent className="flex flex-col justify-end px-4 md:px-6 pb-4 md:pb-6">
                 <p className="truncate text-slate-400">{note.text}</p>
-                <div className="flex gap-4 mt-5 items-end">
+                <div className="flex gap-4 mt-5 items-end ">
                   <Button className="bg-gray-800 hover:bg-gray-700 rounded-3xl text-slate-400 hover:text-slate-200" onClick={() => editNote(note.id)}>Edit</Button>
                   <Dialog open={openModal} onOpenChange={setOpenModal}>
                     <DialogTrigger asChild>
@@ -319,7 +306,7 @@ export default function NotesApp() {
                       </DialogFooter>
                     </DialogContent>
                   </Dialog>
-                  <span className="text-slate-400 ml-auto text-sm">Updated {new Intl.DateTimeFormat("id-ID", {
+                  <span className="text-slate-400 ml-auto text-xs md:text-sm">Updated {new Intl.DateTimeFormat("id-ID", {
                     day: "2-digit",
                     month: "long",
                     year: "numeric",

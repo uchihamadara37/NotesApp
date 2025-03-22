@@ -1,6 +1,5 @@
 "use client"
 
-// import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -14,17 +13,6 @@ import { doc, setDoc } from "firebase/firestore";
 import { z } from "zod";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
-
-// const registerUser = httpsCallable(functions, "registerUser");
-
-// Skema validasi password dengan aturan tertentu
-// const passwordSchema = z
-//   .string()
-//   .min(8, "Password harus minimal 8 karakter")
-//   .regex(/[A-Z]/, "Password harus mengandung huruf besar")
-//   .regex(/[a-z]/, "Password harus mengandung huruf kecil")
-//   .regex(/[0-9]/, "Password harus mengandung angka")
-//   .regex(/[\W_]/, "Password harus mengandung simbol (!@#$%^&*)");
 
 const schema = z
   .object({
@@ -103,9 +91,9 @@ export default function RegisterPage() {
 
   return (
     <div className="flex min-h-screen items-center justify-center bg-gray-100">
-      <Card className="w-full max-w-md p-6 shadow-lg">
+      <Card className="md:w-[80%] max-w-md p-5 shadow-lg">
         <CardHeader>
-          <CardTitle className="text-center text-xl">Register</CardTitle>
+          <CardTitle className="text-center text-xl">Register Alfiander.Notes</CardTitle>
         </CardHeader>
         <CardContent>
           <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
@@ -158,7 +146,7 @@ export default function RegisterPage() {
             <Button type="submit" className="w-full">Register</Button>
             <Button
               type="button"
-              className="w-full mt-2 bg-gray-200 hover:bg-gray-300"
+              className="w-full mt-2 bg-gray-50 hover:bg-gray-300 text-slate-700"
               onClick={() => router.push("/")}
             >
               Back to Login

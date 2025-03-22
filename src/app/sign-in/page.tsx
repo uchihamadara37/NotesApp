@@ -64,9 +64,9 @@ export default function LoginPage() {
 
   return (
     <div className="flex min-h-screen items-center justify-center bg-gray-100">
-      <Card className="w-full max-w-md p-6 shadow-lg">
+      <Card className="md:w-[80%] max-w-md p-6 shadow-lg">
         <CardHeader>
-          <CardTitle className="text-center text-xl">Login</CardTitle>
+          <CardTitle className="text-center text-xl">Login Alfiander.Notes</CardTitle>
         </CardHeader>
         <CardContent>
           <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
@@ -94,7 +94,7 @@ export default function LoginPage() {
 
             <Button
               type="button"
-              className="w-full mt-2 bg-gray-200 hover:bg-gray-300"
+              className="w-full mt-2 bg-gray-50 hover:bg-gray-300 text-slate-700"
               onClick={() => router.push("/sign-up")}
             >
               Register Now!

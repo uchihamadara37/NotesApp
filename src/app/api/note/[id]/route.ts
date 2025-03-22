@@ -23,7 +23,6 @@ async function verifyUser(req: NextRequest) {
 // **UPDATE NOTE**
 export async function PUT(
     req: NextRequest, 
-    // context: { params: { id: string } }
 ) {
     try {
         const uid = await verifyUser(req); // Verifikasi pengguna
@@ -58,7 +57,6 @@ export async function PUT(
 // **DELETE NOTE**
 export async function DELETE(
     req: NextRequest, 
-    // { params }: { params: { id: string } }
 ) {
     try {
         const uid = await verifyUser(req); // Verifikasi pengguna
