@@ -16,10 +16,6 @@ import { useAuth } from "./context/authContext";
 import { useRouter } from "next/navigation";
 
 
-
-
-
-
 // const updateNote = async (note: Note) => {
 //   const response = await fetch(`/api/note/${note.id}`, {
 //     method: "PUT",
@@ -83,7 +79,7 @@ export default function NotesApp() {
 
     try {
       const token = await user.getIdToken();
-      const response = await fetch("/api/note", {
+      const response = await fetch(process.env.NEXT_PUBLIC_API_SERVER_URL+"api/note", {
         method: "GET",
         headers: { Authorization: `Bearer ${token}` },
       });
@@ -110,7 +106,7 @@ export default function NotesApp() {
 
       try {
         const token = await user.getIdToken();
-        const response = await fetch("/api/note", {
+        const response = await fetch(process.env.NEXT_PUBLIC_API_SERVER_URL+"api/note", {
           method: "GET",
           headers: { Authorization: `Bearer ${token}` },
         });
@@ -142,7 +138,7 @@ export default function NotesApp() {
           // Update notes di Firestore
           try {
             const token = await user.getIdToken();
-            const response = await fetch(`/api/note/${editingId}`, {
+            const response = await fetch(`${process.env.NEXT_PUBLIC_API_SERVER_URL}api/note/${editingId}`, {
               method: "PUT",
               headers: {
                 "Content-Type": "application/json",
@@ -168,7 +164,7 @@ export default function NotesApp() {
 
       try {
         const token = await user.getIdToken();
-        const response = await fetch("/api/note", {
+        const response = await fetch(process.env.NEXT_PUBLIC_API_SERVER_URL+"api/note", {
           method: "POST",
           headers: {
             "Content-Type": "application/json",
@@ -204,7 +200,7 @@ export default function NotesApp() {
     }
     try {
       const token = await user.getIdToken();
-      const response = await fetch(`/api/note/${selectedNote.id}`, {
+      const response = await fetch(`${process.env.NEXT_PUBLIC_API_SERVER_URL}api/note/${selectedNote.id}`, {
         method: "DELETE",
         headers: {
           authorization: `Bearer ${token}`,
