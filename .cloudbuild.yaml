@@ -1,0 +1,21 @@
+substitutions:
+  _PROJECT_ID: "c-01-450604"
+  _APP_NAME: "my-next-app"
+
+steps:
+  - name: 'gcr.io/cloud-builders/docker'
+    args: ['build', '-t', 'gcr.io/$_PROJECT_ID/my-next-app', '.']
+
+  - name: 'gcr.io/cloud-builders/docker'
+    args: ['push', 'gcr.io/$_PROJECT_ID/my-next-app']
+
+  - name: 'gcr.io/google.com/cloudsdktool/cloud-sdk'
+    entrypoint: 'gcloud'
+    args:
+      - 'run'
+      - 'deploy'
+      - 'my-next-app'
+      - '--image=gcr.io/$PROJECT_ID/my-next-app'
+      - '--platform=managed'
+      - '--region=us-central1'
+      - '--allow-unauthenticated'
