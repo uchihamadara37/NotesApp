@@ -7,7 +7,7 @@ steps:
     args: 
     - 'build'
     - '-t'
-    - 'gcr.io/$_PROJECT_ID/my-next-app'
+    - 'gcr.io/$PROJECT_ID/my-next-app'
     - '--build-arg'
     - 'NEXT_PUBLIC_FIREBASE_API_KEY=AIzaSyDzZyaR5QLTu8gZ6XrUdoTzYRnwHo1Ef50'
     - '--build-arg'
@@ -52,7 +52,7 @@ steps:
     
 
   - name: 'gcr.io/cloud-builders/docker'
-    args: ['push', 'gcr.io/$_PROJECT_ID/my-next-app']
+    args: ['push', 'gcr.io/$PROJECT_ID/my-next-app']
 
   - name: 'gcr.io/google.com/cloudsdktool/cloud-sdk'
     entrypoint: 'gcloud'
