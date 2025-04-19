@@ -1,6 +1,6 @@
-runtime: nodejs18
+runtime: nodejs20
 
-env: flex
+env: standard
 
 entrypoint: npm run start
 
