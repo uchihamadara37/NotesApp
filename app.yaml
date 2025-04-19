@@ -1,8 +1,8 @@
-runtime: nodejs20
+runtime: custom
 
-env: standard
+env: flex
 
-entrypoint: npm run start
+# entrypoint: npm run start
 
 env_variables:
   NODE_ENV: 'production'
@@ -27,10 +27,10 @@ env_variables:
   ADMIN_UNIVERSE_DOMAIN: 'googleapis.com'
   NEXT_PUBLIC_API_SERVER_URL : 'https://my-next-app-948060519163.us-central1.run.app/'
 
-handlers:
-  - url: /_next/static
-    static_dir: .next/static
-  - url: /static
-    static_dir: static
-  - url: /
-    script: auto
+# handlers:
+#   - url: /_next/static
+#     static_dir: .next/static
+#   - url: /static
+#     static_dir: static
+#   - url: /
+#     script: auto
