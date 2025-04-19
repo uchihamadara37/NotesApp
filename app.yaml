@@ -34,3 +34,6 @@ env_variables:
 #     static_dir: static
 #   - url: /
 #     script: auto
+deployment:
+  container:
+    image: gcr.io/c-01-450604/my-next-fe

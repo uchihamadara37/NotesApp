@@ -1,6 +1,6 @@
 substitutions:
   _PROJECT_ID: "c-01-450604"
-  _APP_NAME: "my-next-app"
+  _APP_NAME: "my-next-fe"
 
 steps:
   - name: 'gcr.io/cloud-builders/docker'
