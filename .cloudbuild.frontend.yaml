@@ -93,6 +93,7 @@ steps:
     - 'deploy'
     - '--image-url'
     - 'gcr.io/$_PROJECT_ID/my-next-fe'
+    - '--promote'
     - '--quiet'
 
 
