@@ -27,6 +27,11 @@ env_variables:
   ADMIN_UNIVERSE_DOMAIN: 'googleapis.com'
   NEXT_PUBLIC_API_SERVER_URL : 'https://my-next-app-948060519163.us-central1.run.app/'
 
+
+automatic_scaling:
+  min_num_instances: 1
+  max_num_instances: 2
+
 # handlers:
 #   - url: /_next/static
 #     static_dir: .next/static
