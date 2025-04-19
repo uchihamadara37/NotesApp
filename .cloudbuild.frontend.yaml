@@ -7,7 +7,7 @@ steps:
     args: 
     - 'build'
     - '-t'
-    - 'gcr.io/$PROJECT_ID/my-next-fe'
+    - 'gcr.io/$_PROJECT_ID/my-next-fe'
     - '--build-arg'
     - 'NEXT_PUBLIC_FIREBASE_API_KEY=AIzaSyDzZyaR5QLTu8gZ6XrUdoTzYRnwHo1Ef50'
     - '--build-arg'
@@ -52,7 +52,7 @@ steps:
     
 
   - name: 'gcr.io/cloud-builders/docker'
-    args: ['push', 'gcr.io/$PROJECT_ID/my-next-fe']
+    args: ['push', 'gcr.io/$_PROJECT_ID/my-next-fe']
 
 
   # - name: 'node:20'
@@ -92,7 +92,7 @@ steps:
     - 'app'
     - 'deploy'
     - '--image-url'
-    - 'gcr.io/$PROJECT_ID/my-next-fe'
+    - 'gcr.io/$_PROJECT_ID/my-next-fe'
     - '--quiet'
 
 
