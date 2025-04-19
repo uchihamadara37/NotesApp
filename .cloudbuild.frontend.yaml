@@ -41,7 +41,6 @@ steps:
     - 'deploy'
     - '--quiet'
     - '--no-promote'
-    dir: './.next'
 
 
 options:
