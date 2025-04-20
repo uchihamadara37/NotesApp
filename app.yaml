@@ -2,7 +2,8 @@ runtime: custom
 
 env: flex
 
-service: andre-next-frontend
+service: default
+# service: andre-next-frontend
 
 # entrypoint: npm run start
 
