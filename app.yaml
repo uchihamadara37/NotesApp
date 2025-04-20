@@ -5,8 +5,6 @@ env: flex
 service: default
 # service: andre-next-frontend
 
-# entrypoint: npm run start
-
 env_variables:
   NODE_ENV: 'production'
   NEXT_PUBLIC_FIREBASE_API_KEY: 'AIzaSyDzZyaR5QLTu8gZ6XrUdoTzYRnwHo1Ef50'
