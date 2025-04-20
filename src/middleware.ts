@@ -17,7 +17,8 @@ export function middleware(req: NextRequest) {
             'https://3000-cs-a6858464-1a31-44a9-b787-295e6771a781.cs-asia-southeast1-yelo.cloudshell.dev',
             'http://localhost:3000',
             'http://localhost:8080',
-            'https://c-01-450604.uc.r.appspot.com'
+            'https://c-01-450604.uc.r.appspot.com',
+            'https://andre-next-frontend-dot-c-01-450604.uc.r.appspot.com'
         ]
 
         const origin = req.headers.get('origin')
