@@ -8,11 +8,17 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { useCreateUserWithEmailAndPassword } from "react-firebase-hooks/auth";
 import { auth, dbFireStore } from "@/app/firebase/config"
 
+import { getAuth, createUserWithEmailAndPassword } from "firebase/auth";
+
 import { doc, setDoc } from "firebase/firestore";
 
 import { z } from "zod";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
+
+import { setPersistence, browserLocalPersistence } from "firebase/auth";
+
+
 
 const schema = z
   .object({
@@ -20,11 +26,11 @@ const schema = z
     email: z.string().email("Email tidak valid"),
     password: z
       .string()
-      .min(8, "Password minimal 8 karakter")
-      .regex(/[A-Z]/, "Harus ada huruf besar")
-      .regex(/[a-z]/, "Harus ada huruf kecil")
-      .regex(/[0-9]/, "Harus ada angka")
-      .regex(/[\W_]/, "Harus ada simbol (!@#$%^&*)"),
+      .min(6, "Password minimal 6 karakter"),
+    // .regex(/[A-Z]/, "Harus ada huruf besar")
+    // .regex(/[a-z]/, "Harus ada huruf kecil")
+    // .regex(/[0-9]/, "Harus ada angka")
+    // .regex(/[\W_]/, "Harus ada simbol (!@#$%^&*)"),
     confirmPassword: z.string(),
   })
   .refine((data) => data.password === data.confirmPassword, {
@@ -39,9 +45,12 @@ interface formValues {
   confirmPassword: string;
 }
 
+
 export default function RegisterPage() {
 
   const router = useRouter();
+
+  const auth = getAuth();
 
   const {
     register,
@@ -51,40 +60,29 @@ export default function RegisterPage() {
     resolver: zodResolver(schema),
   });
 
-  const [
-    createUserWithEmailAndPassword, 
-    // user, 
-    // loading, 
-    errorAuth
-  ] = useCreateUserWithEmailAndPassword(auth);
-
-  if (errorAuth) {
-    console.error("Error oi:", errorAuth);
-    return;
-  }
-
-  
-
-
-  const onSubmit = async (data : formValues) => {
+  const onSubmit = async (data: formValues) => {
     try {
       console.log(data.email);
-      const res = await createUserWithEmailAndPassword(data.email, data.password);
+      const res = await createUserWithEmailAndPassword(auth, data.email, data.password);
+      console.log("user aktif sekarang: ", auth.currentUser);
 
-      if (res?.user){
+      console.log("Hasil daftar: ", res);
+      if (res?.user) {
+        const token = await res.user.getIdTokenResult();
+        console.log("JWT Token dari Firebase:", token);
         await setDoc(doc(dbFireStore, "users", res.user.uid), {
           name: data.name,
           email: data.email,
           createdAt: new Date(),
         });
-
-        console.log("User berhasil disimpan di Firestore");
+        await setPersistence(auth, browserLocalPersistence);
+      //   console.log("User berhasil disimpan di Firestore");
         router.push("/sign-in");
       }
-      console.log(res);
+
 
     } catch (error) {
-      console.error(error);
+      console.error("Error pendaftaran", error);
     }
 
   };

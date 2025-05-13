@@ -12,7 +12,7 @@ import { signInWithEmailAndPassword } from "firebase/auth";
 import Cookies from "js-cookie";
 
 import { auth } from "@/app/firebase/config"
-import { useAuth } from "../context/authContext";
+import { useAuth } from "@/context/AuthContext";
 
 
 const loginScheme = z.object({
@@ -27,7 +27,9 @@ export default function LoginPage() {
   const router = useRouter();
   const { user } = useAuth(); // Ambil user dari context
 
+
   useEffect(() => {
+    // jika user ada maka push ke dashboard
     if (user) {
       router.push("/");
     }
