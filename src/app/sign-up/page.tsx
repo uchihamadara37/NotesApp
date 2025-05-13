@@ -5,8 +5,8 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 
-import { useCreateUserWithEmailAndPassword } from "react-firebase-hooks/auth";
-import { auth, dbFireStore } from "@/app/firebase/config"
+// import { useCreateUserWithEmailAndPassword } from "react-firebase-hooks/auth";
+import { dbFireStore } from "@/app/firebase/config"
 
 import { getAuth, createUserWithEmailAndPassword } from "firebase/auth";
 

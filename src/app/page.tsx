@@ -57,7 +57,7 @@ export default function NotesApp() {
 
   const [editingId, setEditingId] = useState<string | null>(null);
 
-  const { user, loading } = useAuth();
+  const { user,  } = useAuth();
 
   const [openModal, setOpenModal] = useState(false);
 
